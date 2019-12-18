@@ -28,11 +28,11 @@ source_parsers = {
 
 # -- Project information -----------------------------------------------------
 
-project = u'Teleoperation System'
+project = u'The Modular Benchmarking Framework'
 copyright = u'2019, Shadow Robot Company'
 author = u'Shadow Robot Company'
 
-github_doc_root = 'https://github.com/shadow-robot/sr_teleop_documentation/tree/master/docs/index.md'
+github_doc_root = 'https://github.com/shadow-robot/modular_benchmarking_framework/tree/master/docs/index.md'
 
 # The short X.Y version
 version = u''
@@ -123,7 +123,7 @@ html_favicon = 'img/favicon.ico'
 # -- Options for HTMLHelp output ---------------------------------------------
 
 # Output file base name for HTML help builder.
-htmlhelp_basename = 'TeleopSystemdoc'
+htmlhelp_basename = 'ModularFrameworkdoc'
 
 
 # -- Options for LaTeX output ------------------------------------------------
@@ -150,7 +150,7 @@ latex_elements = {
 # (source start file, target name, title,
 #  author, documentclass [howto, manual, or own class]).
 latex_documents = [
-    (master_doc, 'TeleopSystem.tex', u'Teleoperation System Documentation',
+    (master_doc, 'ModularFramework.tex', u'Modular Benchmarking Framework Documentation',
      u'Shadow Robot Company', 'manual'),
 ]
 
@@ -160,7 +160,7 @@ latex_documents = [
 # One entry per manual page. List of tuples
 # (source start file, name, description, authors, manual section).
 man_pages = [
-    (master_doc, 'TeleopSystem', u'Teleoperation System Documentation',
+    (master_doc, 'ModularFramework', u'Modular Benchmarking Framework Documentation',
      [author], 1)
 ]
 
@@ -171,8 +171,8 @@ man_pages = [
 # (source start file, target name, title, author,
 #  dir menu entry, description, category)
 texinfo_documents = [
-    (master_doc, 'TeleopSystem', u'Teleoperation System Documentation',
-     author, 'TeleopSystem', 'One line description of project.',
+    (master_doc, 'ModularFramework', u'Modular Benchmarking Framework Documentation',
+     author, 'ModularFramework', 'One line description of project.',
      'Miscellaneous'),
 ]
 
