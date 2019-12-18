@@ -1,6 +1,6 @@
 # Configuring the framework
 
-The Modular Benchmarking Framework allows a wide range of configuration at different levels: the *config files*, the *launch file* and the *task_constructor*.<br/>
+The Modular Benchmarking Framework allows a wide range of configuration at different levels: the **config files**, the **task_constructor** and the **launch file**. So all you need to modify is located in the **API** package.<br/>
 *The framework should natively be configured to run the EZGripper in simulation without any modification.*
 
 ## Config files
@@ -36,7 +36,7 @@ In this case, in order to control it through the framework, the only thing you n
 The last step is to specify ```package_action_server``` (name of the package in which the server to run is stored), ```node_action_server_name``` (name of the node running the action server) and ```action_server_type``` (type of the node to launch). These three parameters correspond to the different flags you can find when you include a **node** in a launch file. The parameter ```action_server_name``` indicates the name given to the ROS action server, and can be used in any node requiring to control the manipulator.
 
 #### The manipulator is fully integrated to ROS
-In this case it means that you are free to choose between several options. The first one is to use one of the controller provided by ROS by declaring it in the *controller file* (you can find more information [here](??)). If you want something a bit more specific, you can create your own ROS controller derived from the class ```controller_interface::ControllerBase``` and create a plugin so you can use it by declaring it in the *controller file*. An example of home made controller and how to create a plugin can be found [here](https://github.com/shadow-robot/sr_core/tree/kinetic-devel/sr_mechanism_controllers). If you are opting for the latter option, please **make sure that** ```package_action_server``` **is an empty string**, and you do not need to fill the two other fields since the framework will know through the *controller file* which controller to load and execute.
+In this case it means that you are free to choose between several options. The first one is to use one of the controller provided by ROS by declaring it in the *controller file* (you can find more information [here](???)). If you want something a bit more specific, you can create your own ROS controller derived from the class ```controller_interface::ControllerBase``` and create a plugin so you can use it by declaring it in the *controller file*. An example of home made controller and how to create a plugin can be found [here](https://github.com/shadow-robot/sr_core/tree/kinetic-devel/sr_mechanism_controllers). If you are opting for the latter option, please **make sure that** ```package_action_server``` **is an empty string**, and you do not need to fill the two other fields since the framework will know through the *controller file* which controller to load and execute.
 
 
 If you are working in **simulation** and/or your manipulator can be controlled using Moveit, you can use our generic [Moveit-based action server](https://github.com/shadow-robot/modular_benchmarking_framework/modular_benchmarking_framework_core/nodes/moveit_grasp_action_server.cpp) that we provide as an example of grasp controller.<br/>
@@ -145,3 +145,26 @@ wrist_mounted_realsense:
   frame_yaw: 0
 ```
 The ouput is something like [this](???)
+
+## Task Constructor
+
+## Launch file
+The launch file contains other important information that are required to run the robot. We are going to review all the different arguments that you can set to make the framework fit what you need.
+* ```simulation```: If set to ```false```, automatically launches the framework to communicate with the physical robot. Default is ```true``` (so run Gazebo 9).
+* ```description_package```: Name of the ROS package containing *scenes*, *worlds* and *models* you may want to use to set up your environment. You can find out more about what is a description package [here](???).
+* ```robot_package```: Name of the ROS package containing information about the robot such as the *urdf file* and the *controller file*. You can find out more about what is a robot package [here](???).
+* ```robot_urdf_file```: Name of the urdf file containing the description of the **whole** robot. It must contain both the arm(s) and the manipulator(s). The file should be contained in the ```robot_package```.
+* ```world_file```: Name of the Gazebo **.world** file describing the robot's setup for simulation. An explanation about how to create such files can be found [here](???).
+* ```scene_file```: Name of the file containing all the information about the collisions so Moveit can plan according to the different obstacles. An explanation about how to create such files can be found [here](???).
+* ```urdf_args```: Optional arguments that you may need to pass along with the urdf file (for instance to set the position of the robot). **If not needed, leave empty!**
+* ```moveit_config_package```: Name of the moveit config package required to operate the robot with Moveit. A tutorial about how to create one using the assistant is available [here](http://docs.ros.org/melodic/api/moveit_tutorials/html/doc/setup_assistant/setup_assistant_tutorial.html). If you don't manage to properly create it you can follow this [tutorial](???).
+* ```controller_file```: Name of the file containing the different controllers that must be loaded by ROS. The file should be contained in the ```robot_package```.
+* ```simulation_starting_pose```: **Used only in simulation** and defines the values of each joints in Gazebo when starting the robot.
+* ```manipulator_prefix```: String that is contained in all the manipulator's link. For instance it can be `rh`.
+* ```states_directory```: Path of the directory containing the states that you want to use to create your state machine.
+* ```templates_directory```: Path of the directory containing the templates used to generate the different state machines you might need
+* ```state_machine_to_load```: Specify the name of the state machine to run (should end with *.py*). Leave empty if you want to generate a new one.
+* ```task_constructor_script```: Name of the yaml script to use for generating the state machine that is going to be used. **Not used** if `state_machine_to_load` is not empty.
+* ```generated_state_machine_name```: Name of the file containing the generated state machine (should end with *.py*). **Not used** if `state_machine_to_load` is not empty.
+
+Modifying the parameters in the configuration file and in the launch file allows to set up the robot (and its environment) so they can be used by the framework. Having new states and new *task constructor scripts* allow to create different use cases in a modular way without requiring an extensive knowledge about state machines. With all these options, we believe that you can configure the framework to fit your needs. If not, you can have a closer look to the [core](???) and try to modify it.
