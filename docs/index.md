@@ -8,4 +8,5 @@ Robot arms with a ROS interface and manipulators can be integrated without too m
 ## Contents
 * [Installing the framework](user_guide/1_installing_the_framework.md)
 * [Configuring the framework](user_guide/2_configuring_the_framework.md)
-* [Integrating hardware to the framework](user_guide/3_integrating_hardware.md)
+* [Integrating hardware to the framework](user_guide/3_integrating_robot.md)
+* [Using the task constructor](user_guide/4_task_constructor.md)
