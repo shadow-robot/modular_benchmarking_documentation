@@ -232,4 +232,92 @@ We provide two task constructor scripts that should natively work with the frame
 As aforementioned, we already provide a set of [six states](???) that we think would allow to design a good range of behaviours related to manipulation. However if you are not interested in benchmarking, and you want to always use the same generative method, you might want to have a specific state that automatically runs the method without the intervention of the user.
 
 ### Creating the file
-The file constaining your state **must** be located inside a python package (with `__init__.py` files in python 2.x). The filename **must** contain only lowercase letters and underscores. The name of the class defined inside the file **must** bde the [camel case](https://en.wikipedia.org/wiki/Camel_case) version of the filename. For instance if you want to create a state that generates the next pose of the robot for camera-based servoeing, you file might be named `servoeing_command.py` and the state should be named `ServoeingCommand`. If it's not clear, please have a look at how are named the classes defined in these [files](???).
+The file constaining your state **must** be located inside a python package (with `__init__.py` files in python 2.x). The filename **must** contain only lowercase letters and underscores. The name of the class defined inside the file **must** bde the [camel case](https://en.wikipedia.org/wiki/Camel_case) version of the filename. For instance if you want to create a state that generates the next pose of the robot for camera-based servoeing, you file might be named `servoeing_command.py` and the state should be named `ServoeingCommand`. If it's not clear, please have a look at how are named the classes defined in this [folder](???).
+
+### Template file
+In order to make the state fully compatible with our task contructor, the state should be derived from the following template
+```python
+#!/usr/bin/env python
+
+# You must import these two packages
+import rospy
+import smach
+# You can import more packages as well if you need them
+
+class StateName(smach.State):
+
+    # You can of course add more parameters that you are going to be able to set in the task constructor script. Make sure to make the name in this signature and the one used in the yaml script match.
+    def __init__(self, outcomes=["success", "fail"], input_keys=[], output_keys=[], io_keys=["grasp_client", "max_torque"]):
+        # This line must be here since it makes the class a state that can be used by smach
+        smach.State.__init__(self, outcomes=outcomes, io_keys=io_keys, input_keys=input_keys, output_keys=output_keys)
+        # You can initialize whatever you need
+        # ...
+        # This line must be kept as well. We advise yout to order the list of outcomes such as the last item is the "negative" outcome
+        self.outcomes = outcomes
+
+    # The function execute MUST be here since it gathers all the steps that will be run when executing the state.
+    # The signature should be kept as it is. You can access any userdata defined in the io keys by using userdata.<key>
+    # The execute must return at least one of the different outcomes that you have defined in the __init__
+    def execute(self, userdata):
+        # You can implement what you want here
+        # You can also call other functions or methods of the class that you may want to implement
+        # Here is an example
+        if self.foo():
+            # "Negative" outcomes
+            return self.outcomes[-1]
+        # Do other stuff
+        # ...
+        return self.outcomes[0]
+
+    def foo(self):
+      # Do stuff
+      return True
+
+    # You can create more functions
+```
+As you can see, creating a new state is quite easy and modular. As a matter of fact, you can add any parameters tha you might want to change from the task constructor and you can even use methods from external packages. You can also use functions implemented in C++ through, for instance, services or actions that you can call in the state.
+
+### Integrating a new state to the task constructor
+If you have properly followed the two previous parts, the only remaining step is to import the state in the task constructor script. Fill the `source` field with the name of the file (witout the extension). For instance if you want to add the ServoeingCommand state, I would have `servoeing_command`. Then you can add all the options that you have defined in your signature with the **exact same spelling**. You can also natively use the `params` trick. **Don't forget to specify the transitions!** And here you are, you can now create state machines relying on your own states.
+
+## Creating its own state machine templates
+Our task constructor relies on *template* files that define the backbone of a state machine. We provide template files for creating a basic [state machine](???), and a [concurrent state machine](???). We also provide a template for a state machine [compatible with the framework](???). The major difference is that we define and initialize the userdata (set of variables that can be modified within states and that can be communicated) allowing to take the most of the different functionalities that the framework offers. <br/>
+If you need to modify the initialization, you can either create modify our file, but we **strongly** advise you to just create another one. Here is the guide to create you own template file.
+
+### Understanding the Jinja2 part
+Our task constructor is making the most of [Jinja2](???), a powerful templating tool. We are going to describe the most important parts of the template file.
+
+#### Importing packages
+The top part of your file should include the following lines
+```python
+#!/usr/bin/env python
+
+# Automatically import the proper states with respect to the state machine defined in the task constructor script
+{% for state_to_import in state_machine.states_source %}
+from {{ state_to_import[0] }}.{{ state_to_import[1] }} import {{ state_to_import[2] }}
+{% endfor %}
+import smach
+import rospy
+# You can also import more packages that you may need
+```
+As you can see, in addition to the classical python import statement, we can find some statements between curly brackets. Such lines are commands telling Jinja2 that these parts should be modified with respect to some objects' content. Here, these few lines automatically import the proper states automatically (given that they are following the rules stated before).
+
+#### Signature of the class
+The class should have the following signature
+```python
+class {{ state_machine.type }}(StateMachineType)
+```
+That way the name given to the class will be the same as the one you specified in the task constructor script. Please change `StateMachineType` by the kind of state machine you want to use. It can be for instance `smach.StateMachine` or `smach.Concurrence`.
+
+#### Initialization of the class
+The `__init__` function should follow this template
+```python
+def __init__(self, outcomes={% if "outcomes" in state_machine.parameters%}{{ state_machine.parameters.outcomes }}{% else %}["success", "fail"]{% endif %}):
+    smach.StateMachine.__init__(self, outcomes=outcomes)
+    with self:
+    {% for state_name, state in state_machine.components.items() %}
+        smach.StateMachine.add("{{ state_name }}", {{ state.type }}({% for param_name, param_value in state.parameters.items() %}{% if param_name != "name" %}{{ param_name }}={% if param_value is string and "self" not in param_value %}"{{ param_value }}"{% else %}{{ param_value }}{% endif %}{% if not loop.last %}, {% endif %}{% endif %}{% endfor %}), transitions={{ state.transitions}})
+    {% endfor %}
+    # You can call other functions here, such as the one responsible for userdata initialization
+```
+This part automatically creates the whole
