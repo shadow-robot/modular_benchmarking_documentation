@@ -84,7 +84,7 @@ Each state you want to use should be defined as follow:
 ```
 The can give any name to your states, we just advise you that they are meaningful in order to get a hang of what the task is about just by looking at the name of the differents states.
 * `source` **must** be the name of the python file in which the state is implemented. The file **must** be located in the `states_directory` argument of the launch file.
-* As long as the states are properly formated (see [here](???)) you can also define the different options direclty in the YAML file.
+* As long as the states are properly formated (see [here](##implementing-its-own-states)) you can also define the different options direclty in the YAML file.
 * `outcomes` define the different outcomes of the states. It must be a list, such as `[success, failure]`.
 * `transitions` **must** be specified as they are defining how to link the different states (or state machines) together. For each potential outcome of the state, specifies what should be done next. If you want the state called `DummyState` to follow your state if the latter outputs `success` then this field should be `{success: DummyState}`.
 
@@ -120,11 +120,11 @@ states:
 You can of course create several nested state machines in the same root state machine or created recursively nested state machines. The only restriction is that the source file of the nested state machines **must** be *template files* such as the files you can find [here](???), and you **must** define the transitions in order to know what to do when the nested state machine is done. Please note that we already provide template files allowing to create a state machine **fully compatible** with the framework, as well as a [concurrent state machine](http://wiki.ros.org/smach/Tutorials/Concurrence%20container). In our implementation, one of the option for the state machine is to specify the information it should have access to (userdata). When using nested state machine, we often want to kinf od *inherit* the same userdata as the parent. You can do it with `userdata: self.userdata`.
 
 #### Miscellanous
-Although we tried our best to simplify the creation of state machines by preventing users to dive into different tutorials and face the numerous boilerplate that would come with it, defining a complex state machine might be a bit painful. That is why when [creating new states](???) (or using the one we [already provide](???)) you can define some default values for the options that are unlikely to be changed and not specify them in the task constructor script. <br/>
+Although we tried our best to simplify the creation of state machines by preventing users to dive into different tutorials and face the numerous boilerplate that would come with it, defining a complex state machine might be a bit painful. That is why when [creating new states](##implementing-its-own-states) (or using the one we [provide](./provided_states.md)) you can define some default values for the options that are unlikely to be changed and not specify them in the task constructor script. <br/>
 When creating state machines (especially nested ones), it might be a bit painful to copy/paste some parts such as the input/output keys that might be the same for several states. To simplify this it is possible, in a state or a state machine, to create a `params` field which **must** be a dictionary in which you can store values and reuse them in the script. An example of `params` could be `params: {outcomes: [success, fail]}`. If this field has been added to a state machine then all the children states can use `outcomes: params.outcomes`. Please note that the same principle can be applied within a given state in order to shorten the definition of a state and make (once you get used to it) the task constructor script more compact and readable.
 
 ### Examples
-In this subsection we are going to give some examples of state machines based on the [provided states](???) and the [framework template](???). The point is not to have meaningful examples in term of task but rather to demonstrate how to use the task constructor.
+In this subsection we are going to give some examples of state machines based on the [provided states](./provided_states.md) and the [framework template](???). The point is not to have meaningful examples in term of task but rather to demonstrate how to use the task constructor.
 
 #### Making a task constructor script more compact
 Let's start with the following task constructor script:
@@ -229,12 +229,12 @@ The two different examples that we have seen so far show some examples about how
 We provide two task constructor scripts that should natively work with the framework. One is made especially for picking an object in [simulation](???) and the other is about [pick and place](???) on a physical robot not fully integrated to ROS. Both use-case rely at some point on a grasp-pose detection method that will determine where and how the manipulator should be in order to grasp the object. As explained in the introduction of this tutorial, the state machine itself is almost method-independent so that you can just change the method for benchmarking for instance.
 
 ## Implementing its own states
-As aforementioned, we already provide a set of [six states](???) that we think would allow to design a good range of behaviours related to manipulation. However if you are not interested in benchmarking, and you want to always use the same generative method, you might want to have a specific state that automatically runs the method without the intervention of the user.
+As aforementioned, we already provide a set of [six states](./provided_states.md) that we think would allow to design a good range of behaviours related to manipulation. However if you are not interested in benchmarking, and you want to always use the same generative method, you might want to have a specific state that automatically runs the method without the intervention of the user.
 
 ### Creating the file
 The file constaining your state **must** be located inside a python package (with `__init__.py` files in python 2.x). The filename **must** contain only lowercase letters and underscores. The name of the class defined inside the file **must** bde the [camel case](https://en.wikipedia.org/wiki/Camel_case) version of the filename. For instance if you want to create a state that generates the next pose of the robot for camera-based servoeing, you file might be named `servoeing_command.py` and the state should be named `ServoeingCommand`. If it's not clear, please have a look at how are named the classes defined in this [folder](???).
 
-### Template file
+### Skeleton of a state
 In order to make the state fully compatible with our task contructor, the state should be derived from the following template
 ```python
 #!/usr/bin/env python
@@ -282,10 +282,10 @@ If you have properly followed the two previous parts, the only remaining step is
 
 ## Creating its own state machine templates
 Our task constructor relies on *template* files that define the backbone of a state machine. We provide template files for creating a basic [state machine](???), and a [concurrent state machine](???). We also provide a template for a state machine [compatible with the framework](???). The major difference is that we define and initialize the userdata (set of variables that can be modified within states and that can be communicated) allowing to take the most of the different functionalities that the framework offers. <br/>
-If you need to modify the initialization, you can either create modify our file, but we **strongly** advise you to just create another one. Here is the guide to create you own template file.
+If you need to modify the initialization, you can either create modify our file, but we **strongly** advise you to just create another one. It can also be useful to create a template if you use often a specific state machine that you don't change much. Here is the guide to create you own template file.
 
 ### Understanding the Jinja2 part
-Our task constructor is making the most of [Jinja2](???), a powerful templating tool. We are going to describe the most important parts of the template file.
+Our task constructor is making the most of [Jinja2](https://jinja.palletsprojects.com/en/2.10.x/), a powerful templating tool. We are going to describe the most important parts of the template file.
 
 #### Importing packages
 The top part of your file should include the following lines

@@ -19,13 +19,13 @@ The last step is to add the *gazebo_ros_control* plugin to the urdf file. The pl
 ```xml
 <gazebo>
   <plugin name="gazebo_ros_control" filename="libgazebo_ros_control.so">
-    <!-- Optional -- Default being the value of robot name in the urdf/sdf file-->
+    <!-- Optional - Default being the value of robot name in the urdf/sdf file-->
     <robotNamespace>my_name_space</robotNamespace>
-    <!-- Optional -- The period of the controller update (in seconds), default is Gazebo's period -->
+    <!-- Optional - The period of the controller update (in seconds), default is Gazebo's period -->
     <controlPeriod>my_value</controlPeriod>
-    <!-- Optional -- The location of the robot_description (URDF) on the parameter server, default being '/robot_description' -->
+    <!-- Optional - The location of the robot_description (URDF) on the parameter server, default being '/robot_description' -->
     <robotParam>my_param_value</robotParam>
-    <!-- Optional -- The pluginlib name of a custom robot sim interface to be used (see below for more details), default being 'gazebo_ros_control/DefaultRobotHWSim' -->
+    <!-- Optional - The pluginlib name of a custom robot sim interface to be used (see below for more details), default being 'gazebo_ros_control/DefaultRobotHWSim' -->
     <robotSimType>my_value</robotSimType>
   </plugin>
 </gazebo>
