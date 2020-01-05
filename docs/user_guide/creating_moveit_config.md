@@ -34,4 +34,4 @@ To make sure that everything works, you can run the framework with your newly cr
 You should be able to move the robot arm and the manipulator in rviz and see the change in Gazebo.
 
 ## It does not work for me...
-If for some reason it does not work, you can try to have a look at [this](???) and [this](???) moveit config package and see what are the differences.
+If for some reason it does not work, you can try to have a look at [this](https://github.com/ARQ-CRISP/arq_ur5_ezgripper_moveit_config) moveit config package and see what are the differences.

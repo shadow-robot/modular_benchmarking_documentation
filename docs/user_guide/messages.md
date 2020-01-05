@@ -23,6 +23,11 @@ In our definition, a grasp can be characterised by:
 As you can see, most of the methods generating grasps provide at least some of the information contained in this message. Thats is why with some simple modification we can easily make it compatible with most of the methods.
 
 ## GraspCommand
+This message contains all information required to execute a grasp. In addition to the `StandardisedGrasp` message, it contains the grasp state (which phase should be executed next) as well as the maximum torque the manipulator should deploy. Having the grasp state allows to use the same grasp message to execute three different manipulator states by just changing its value.
 
-## Helpers
-Here are all the functions that can be used both in python and C++
+## Grasp action
+The provided action server dedicated to grasping relies on this action. The goal definition is the `GraspCommand` message. Its result is a set of three boolean that must be returned stating whether the grasp state defined in the goal has correctly been executed. We defined the feedback as the joint state of the manipulator. Yo ucan find an example of action server [here](???).
+
+## Utils
+We provide some function **both in python and in C++** in order to help you create some standard and widely used ROS messages and some of the aforementioned messages. <br/>
+You can for instance find a [C++ function](???) creating a `StandardisedGrasp` message for you from a set on input parameters. The python equivalent can be found [here](???). You also have a set of handful functions taking care of creating standard messages such as `PoseStamped`, and `JointState`.
