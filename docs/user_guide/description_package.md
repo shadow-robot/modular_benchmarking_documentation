@@ -1,5 +1,5 @@
 # Description package
-This short tutorial explains what is a description package, why we need it and what it should contain. It also give an overview about how to create Gazebo world files.
+This short tutorial explains what is a description package, why we need it and what it should contain. It also gives an overview about how to create Gazebo world files.
 
 ## What is it?
 A description package is required to describe the environment in which the robot will operate. This ROS package (whatever its name) must contain all required information regarding the robot's setup. It gathers gazebo **.world** files, as well as all the models required to display it and scenes in order to restrain robot's movement and having proper collision checking (**.scene** files).
@@ -9,8 +9,10 @@ The different files should be organized in the three following folders:
 - worlds
 - scenes
 ```
+You can find a description package [here](https://github.com/ARQ-CRISP/ARQ_common_packages/tree/master/arq_description_common).
+
 ## Models
-The folder *models* must contain at least all the objects used to compose a world, defined as sdf files. It is also **strongly** recommended to add inside the same folder all the objects you want to be able to spawn in gazebo.
+The folder *models* must contain at least all the objects used to compose a world, defined as sdf files. It is also **strongly** recommended adding inside the same folder all the objects you want to be able to spawn in gazebo.
 The minimal directory structure of `models` is the following:
 ```
 models
@@ -26,7 +28,7 @@ models
 Please note that the meshes can also be *.dae* files, allowing you to add texture.
 
 ## Creating Gazebo world file
-The aforementioned models will allow to create Gazebo worlds. It exists several ways of creating gazebo *worlds*, but we encourage to follow the steps described [here](https://shadow-experimental.readthedocs.io/en/latest/user_guide/1_6_software_description.html#creating-a-new-world-scene) (all required dependencies are installed in the docker). If you are not a big fan of GUI and you already have a good hang of how Gazebo world files are working, you can still create your world.
+The aforementioned models will allow creating Gazebo worlds. It exists several ways of creating gazebo *worlds*, but we encourage to follow the steps described [here](https://shadow-experimental.readthedocs.io/en/latest/user_guide/1_6_software_description.html#creating-a-new-world-scene) (all required dependencies are installed in the docker). If you are not a big fan of GUI and you already have a good hang of how Gazebo world files are working, you can still create your world.
 
 ### Creating a Gazebo world without a GUI
 The **most** important part is having all the objects you want to add to your world to be in the folder that you have specified for **GAZEBO_MODEL_PATH** and **GAZEBO_WORKSPACE_PATH**. Once this is done, you can just edit the following template:
@@ -105,4 +107,4 @@ The **most** important part is having all the objects you want to add to your wo
 Once modified, you can save the file with a *.world* extension, and that's it you have your Gazebo world created!
 
 ## Creating scenes files
-Scene files gather all the information about the collision scene of the robot. You can either create a simplified version of you environment using primitive shapes (unrecommended) or use the *.world* file that you have just created. You can either follow the instructions on this [link](https://shadow-experimental.readthedocs.io/en/latest/user_guide/1_6_software_description.html#creating-a-new-world-scene) or use the framework to create the scene file. In simulation mode, specify the world file corresponding to the scene you want to generate. Once the framework launched go in RViz, if you don't have `Motion Planning` add it. Then go in the tab called `Scene Objects` and click on `Export As Text`. Choose the path to the `scenes` folder of your description package, pick a name and save it. And here is your scene file.
+Scene files gather all the information about the collision scene of the robot. You can either create a simplified version of your environment using primitive shapes (not recommended) or use the *.world* file that you have just created. You can either follow the instructions on this [link](https://shadow-experimental.readthedocs.io/en/latest/user_guide/1_6_software_description.html#creating-a-new-world-scene) or use the framework to create the scene file. In simulation mode, specify the world file corresponding to the scene you want to generate. Once the framework launched go in RViz, if you don't have `Motion Planning` add it. Then go in the tab called `Scene Objects` and click on `Export As Text`. Choose the path to the `scenes` folder of your description package, pick a name and save it. And here is your scene file.

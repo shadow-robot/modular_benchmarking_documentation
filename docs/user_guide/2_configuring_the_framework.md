@@ -3,11 +3,11 @@ The Modular Benchmarking Framework allows a wide range of configuration at diffe
 *The framework should natively be configured to run the EZGripper in simulation without any modification.*
 
 ## Config files
-All the config files are stored in the **config** folder of the *modular_framework_api* package. They gather all the differents components that you might want to change in order to run your robot, without requiring any code. We will provide a detailed description of each of them.
+All the config files are stored in the **config** [folder](https://github.com/shadow-robot/modular_benchmarking_framework/tree/kinetic-devel/modular_framework_api/config) of the *modular_framework_api* package. They gather all the different components that you might want to change in order to run your robot, without requiring any code. We will provide a detailed description of each of them.
 
 ### Hardware connection
 This YAML file must contain all the *hardware_interface* that ROS should be aware of when using the framework on the physical robot. If you are not familiar with this concept, you can read more about it on this [tutorial](https://github.com/ros-controls/ros_control/wiki/hardware_interface). The first parameter in the YAML file, **robot_hardware** should contain the list of all the *robot hardware* that are going to be defined in the same file. Each of the specific hardware interface must be derived from `RobotHW`. The framework will then automatically create a combined hardware interface.</br>
-The YAML file must then specificy for each hardware interface the different parameters that must be loaded on the ROS param server in order to run the hardware. The parameters are implementation-dependent. **The framework provides natively a compatible hardware interface for Universal Robot arms**. The source code can be found on [github](https://github.com/shadow-robot/sr_ur_arm/blob/kinetic-devel/sr_ur_robot_hw/src/sr_ur_robot_hw.cpp). For our implementation, the following parameters must be filled:
+The YAML file must then specify for each hardware interface the different parameters that must be loaded on the ROS param server in order to run the hardware. The parameters are implementation-dependent. **The framework provides natively a compatible hardware interface for Universal Robot arms**. The source code can be found on [github](https://github.com/shadow-robot/sr_ur_arm/blob/kinetic-devel/sr_ur_robot_hw/src/sr_ur_robot_hw.cpp). For our implementation, the following parameters must be filled:
 * ```robot_id```: Allow to load a robot which name consists of a prefix (usually given in the URDF file)
 * ```robot_ip_address```: Robot's IP address
 * ```control_pc_ip_address```: IP address of the machine that is controlling the robot arm
@@ -22,27 +22,25 @@ Obviously, some parameters (even if renamed) must absolutely be loaded, such as 
 
 ### Generative methods parameters
 Whatever the method used to generate grasps, joint states, trajectories or poses, they rely on some parameters provided by the user. If you are using the framework for benchmarking, you may not want to modify the same information across the different files but instead centralize them in a single YAML file loaded on the ROS param server and access them through the ROS API. This file can be filled with anything the user needs to load and access in different nodes without hardcoding it and that is susceptible to change. </br>
-For instance, the one we provide contains information about the name of the origin frame and the values specifying a cropping area. You can also add, for example, the path to a neural network that needs to be evaluated.
+For instance, the [one we provide](https://github.com/shadow-robot/modular_benchmarking_framework/blob/kinetic-devel/modular_framework_api/config/generative_methods_config.yaml) contains information about the name of the origin frame and the values specifying a cropping area. You can also add, for example, the path to a neural network that needs to be evaluated.
 
 ### Manipulator controller
-This YAML file specifies how to control the manipulator that you are using either in simulation or on the physical robot. Let's differentiate the case in which the manipulator you are using is *fully integrated* to ROS (meaning that it can be controlled using *ros_controllers* and is plugged in the framework via a *hardware_interface*) and in which the manipulator is controlled directly through some drivers without a hardware interface.
+Since we want to make this framework usable for everyone, we designed it so you can control the manipulator with custom made controllers. This way, if your hardware is not fully integrated to ROS or you control the hardware through some third-party drivers, you can take the most of our framework. It is possible to do so by [creating an action-based controller](./3_integrating_hardware.md). <br/>
+Whether it is in simulation or with the physical robot, this [config file](https://github.com/shadow-robot/modular_benchmarking_framework/blob/kinetic-devel/modular_framework_api/config/manipulator_controller_parameters.yaml) allows you to specify how to control the manipulator. Here are the different parameters:
+* `manipulator_group_name`: If you are using Moveit, name of the group given to the manipulator.
+* `manipulator_controller_action_server_name`: If you are using your own action-based controller, you can specify its name here.
+* `package_manipulator_action_server`: If you are using you own action-based controller, specify the package in which it is located.
+* `manipulator_controller_node_name`: If you are using your own action-based controller, specify the name of the node running it.
+* `manipulator_controller_action_server_type`: Type of the node in which the action server is launched (can be a .py file if written in python).
 
-#### The manipulator is not fully integrated to ROS
-In this case, in order to control it through the framework, the only thing you need is to write a ROS action server in a node. A tutorial about actions is available [here](http://wiki.ros.org/actionlib) and an example of action server for the EZGripper can be found [here](https://github.com/bdenoun/EZGripper/blob/master/ezgripper_driver/nodes/ezgripper_controller.py). The latter is a ROS action server designed for grasping, but you can easily develop one dedicated to dexterous manipulation. <br/>
-The last step is to specify ```package_manipulator_action_server``` (name of the package in which the server to run is stored), ```manipulator_controller_node_name``` (name of the node running the action server) and ```manipulator_controller_action_server_type``` (type of the node to launch). These three parameters correspond to the different flags you can find when you include a **node** in a launch file. The parameter ```manipulator_controller_action_server_name``` indicates the name given to the ROS action server, and can be used in any node requiring to control the manipulator.
-
-#### The manipulator is fully integrated to ROS
-In this case it means that you are free to choose between several options. The first one is to use one of the controller provided by ROS by declaring it in the *controller file* (you can find more information [here](./robot_package.md)). If you want something a bit more specific, you can create your own ROS controller derived from the class ```controller_interface::ControllerBase``` and create a plugin so you can use it by declaring it in the *controller file*. An example of home made controller and how to create a plugin can be found [here](https://github.com/shadow-robot/sr_core/tree/kinetic-devel/sr_mechanism_controllers). If you are opting for the latter option, please **make sure that** ```package_manipulator_action_server``` **is an empty string**, and you do not need to fill the two other fields since the framework will know through the *controller file* which controller to load and execute.
-
-
+If you are using controllers integrated to ROS and exported as plugin, set `package_manipulator_action_server` as `""`, and don;t pay attention to the two following parameters.If you want to find out if your robot is *fully integrated* to ROS or how to create the action-based controller, you can go [here](./3_integrating_hardware.md).<br/>
 If you are working in **simulation** and/or your manipulator can be controlled using Moveit, you can use our generic [Moveit-based action server](https://github.com/shadow-robot/modular_benchmarking_framework/blob/kinetic-devel/modular_framework_core/nodes/moveit_grasp_action_server.cpp) that we provide as an example of grasp controller.<br/>
 If your controller requires more parameters, you can of course add them to this config files (such as ```max_torque``` for instance).
 
 ### Connection to an external manipulator
-This config file gathers all parameters required to connect a manipulator that is **not** fully integrated in ROS and/or is not using an ethernet connection. If the manipulator only has an USB interface and you do not want to change the port address everytime in the code, you can store all these information on the ROS param server. The [file](https://github.com/shadow-robot/modular_benchmarking_framework/modular_framework_api/config/external_manipulator_connection.yaml) natively provided gives an example of the information needed to communicate with the EZGripper.
+This config file gathers all parameters required to connect a manipulator that is **not** fully integrated in ROS and/or is not using an ethernet connection. If the manipulator only has an USB interface and you do not want to change the port address everytime in the code, you can store all this information on the ROS param server. The [file](https://github.com/shadow-robot/modular_benchmarking_framework/modular_framework_api/config/external_manipulator_connection.yaml) natively provided gives an example of the information needed to communicate with the EZGripper.
 
 ### Motion Planner config
-*If you are interested in planner benchmarking, you might be interested in [this](https://planners-benchmarking.readthedocs.io/en/latest/)*. <br/> <br/>
 This config file allows to configure the motion planner that is going to be used when planning for a specific group during your task. For now, you can choose any motion planner among this [list](http://ompl.kavrakilab.org/planners.html). All of the parameters of this configuration file **must be filled**! .
 * The string corresponding to ```planner_name``` must exactly match the name of the planner defined in your [moveit package config](http://docs.ros.org/kinetic/api/moveit_tutorials/html/doc/setup_assistant/setup_assistant_tutorial.html). If you are using what we provide, the name should match what is declared in this [file](https://github.com/ARQ-CRISP/arq_ur5_ezgripper_moveit_config/blob/master/config/ompl_planning.yaml).
 * ```robot_speed_factor``` allows to scale the speed of the robot when executing a trajectory (value between 0 and 1)
@@ -52,6 +50,8 @@ This config file allows to configure the motion planner that is going to be used
 
 
  **/!\** Please note that **for now** the planner **must** be part of the **OMPL** planner manager and is going to be used by Moveit. We are working on creating an interface so that home made motion planners can be integrated **/!\**
+
+ *If you are interested in planner benchmarking, you might be interested in [this](https://planners-benchmarking.readthedocs.io/en/latest/).*
 
  ### Known joint states
  Most of the time, even when running highly automated methods, we know some *waypoints* of the robot (e.g starting joint state of the robot). For instance when cleaning a surface by picking objects, they are usually all dropped at the same pre-defined location. Instead of hardcoding them in the code, you can gather them in the config file called **named_joint_states.yaml**. They must be defined with the following rule:
@@ -70,9 +70,9 @@ waypoint2_name:
 
 ...
  ```
- Just make sure that the given names in this YAML file are **unique** (i.e not giving twice the same name to two joint states). You can however define joint states for **different groups** in the same file. The joint states defined here can also be used to automatically create trajectories (please see [here](#known-trajectories)).
+ Just make sure that the given names in this YAML file are **unique** (i.e not giving twice the same name to two joint states). You can however define joint states for **different groups** in the same file. The joint states defined here can also be used to automatically create trajectories (please see [here](###known-trajectories)).
 
- ### Known trajectories
+### Known trajectories
 In some cases, part of the task performed by the robot is known in advance and we are expecting the robot to always repeat a given trajectory. For instance, after grasping an object at an unknown pose, go to pose A through pose B and C. For such cases, you can predefined some trajectories based on the joint states that are defined in **named_joint_states.yaml**. The framework can then retrieveand execute this known trajectory by its name. The different trajectories can be configured to match a given timeline and must be declared following this rule:
 ```yaml
 trajectory1_name:
@@ -119,7 +119,7 @@ sensor_name_2:
 
 ...
 ```
-Please note that if any of the fields is missing, the frame will not be added and the corresponding transform won't be published. You can also add all the parameters that you want to use in other nodes and you do not want to hardcode since they might change, such as the name of the topics on which data is published. **You can add sensors that are attached to moving links as well.** For example, if your add to this [file](https://github.com/shadow-robot/modular_benchmarking_framework/modular_framework_api/config/sensors_config.yaml) a new sensor of which origin is ```eg_manipulator```, with any coordinates, you will se that when the robot is moving the frame is changing as well. Which allows for instance to integrate wrist mounted cameras or tactile sensors easily. The following YAML file depicts a setup with a dynamic and a static camera:
+Please note that if any of the fields is missing, the frame will not be added and the corresponding transform won't be published. You can also add all the parameters that you want to use in other nodes and you do not want to hard-code since they might change, such as the name of the topics on which data is published. **You can add sensors that are attached to moving links as well.** For example, if your add to this [file](https://github.com/shadow-robot/modular_benchmarking_framework/modular_framework_api/config/sensors_config.yaml) a new sensor of which origin is ```eg_manipulator```, with any coordinates, you will se that when the robot is moving the frame is changing as well. Which allows for instance to integrate wrist mounted cameras or tactile sensors easily. The following YAML file depicts a setup with a dynamic and a static camera:
 ```yaml
 fixed_kinect:
   frame_id: "simulated_kinect2"
@@ -141,10 +141,9 @@ wrist_mounted_realsense:
   frame_pitch: 0
   frame_yaw: 0
 ```
-The output is something like [this](???)
 
 ## Task Constructor
-The different files contained in the folder *task_constructor_script* describe through a simple and intuitive YAML interface the task the robot should perform. Given some *states* representing atomic actions, we believe it possible to create very complex and non linear behaviours that can be used to solve real world problems. A modular way to connect these states to create use cases, while controlling the behaviour when facing an issue, is using state machines. For this purpose we rely on the [smach](http://wiki.ros.org/smach) library. <br/>
+The different files contained in the folder *task_constructor_script* describe through a simple and intuitive YAML interface the task the robot should perform. Given some *states* representing atomic actions, we believe it possible to create very complex and non-linear behaviours that can be used to solve real world problems. A modular way to connect these states to create use cases, while controlling the behaviour when facing an issue, is using state machines. For this purpose we rely on the [smach](http://wiki.ros.org/smach) library. <br/>
 We created a layer that simplifies the construction of the state machines, so that users without any knowledge regarding state machines, smach or even ROS can program the robot to perform some specified tasks. We provide a set of states allowing to perform most of the generic tasks related to manipulation, but that can be used for other use cases. The user only needs to link the states together through in a YAML file.<br/>
 The YAML file must be structured the following way:
 ```yaml
@@ -213,7 +212,7 @@ The launch file contains other important information that are required to run th
 * ```moveit_config_package```: Name of the moveit config package required to operate the robot with Moveit. A tutorial about how to create one using the assistant is available [here](http://docs.ros.org/melodic/api/moveit_tutorials/html/doc/setup_assistant/setup_assistant_tutorial.html). If you don't manage to properly create it you can follow this [tutorial](./creating_moveit_config.md).
 * ```controller_file```: Name of the file containing the different controllers that must be loaded by ROS. The file should be contained in the ```robot_package```.
 * ```simulation_starting_pose```: **Used only in simulation** and defines the values of each joints in Gazebo when starting the robot.
-* ```manipulator_prefix```: String that is contained in all the manipulator's link. For instance it can be `rh`.
+* ```manipulator_prefix```: String that is contained in all the manipulator's link. For instance, it can be `rh`.
 * ```states_directory```: Path of the directory containing the states that you want to use to create your state machine.
 * ```templates_directory```: Path of the directory containing the templates used to generate the different state machines you might need
 * ```state_machine_to_load```: Specify the name of the state machine to run (should end with *.py*). Leave empty if you want to generate a new one.
@@ -221,4 +220,4 @@ The launch file contains other important information that are required to run th
 * ```generated_state_machine_name```: Name of the file containing the generated state machine (should end with *.py*). **Not used** if `state_machine_to_load` is not empty.
 
 
-Modifying the parameters in the configuration file and in the launch file allows to set up the robot (and its environment) so they can be used by the framework. Having new states and new *task constructor scripts* allow to create different use cases in a modular way without requiring an extensive knowledge about state machines. With all these options, we believe that you can configure the framework to fit your needs. If not, you can have a closer look to the [core](???) and try to modify it.
+Modifying the parameters in the configuration file and in the launch file allows setting up the robot (and its environment) so they can be used by the framework. Having new states and new *task constructor scripts* allow creating different use cases in a flexible way without requiring an extensive knowledge about state machines. With all these options, we believe that you can configure the framework to fit your needs. If not, you can have a closer look to the [core](./5_framework_core.md) and try to modify it.

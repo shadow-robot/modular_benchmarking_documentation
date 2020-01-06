@@ -6,7 +6,7 @@ This message contains the information required to *squeeze*. As a matter of fact
 
 ## ManipulatorState
 This message fully describes the state of the manipulator. It contains a field `posture` which is a [JointState](http://docs.ros.org/melodic/api/sensor_msgs/html/msg/JointState.html) describing the internal state of the manipulator. It also contains the field `pose` which describes with a [PoseStamped](http://docs.ros.org/melodic/api/geometry_msgs/html/msg/PoseStamped.html) the pose of the manipulator. <br/>
-We believe that these information allow to specify the state of the manipulator regardless of the application.
+We believe that this information allow to specify the state of the manipulator regardless of the application.
 
 ## StandardisedGrasp
 The definition of a grasp differs greatly from one work to another. We propose here a quite generic definition of a grasp. Since you can use only some of the fields contained in this message, we believe that this message can be compatible with most of the different works about grasping. <br/>
@@ -20,13 +20,13 @@ In our definition, a grasp can be characterised by:
 * `torque_intensity`: TorqueIntensity message that contains how the manipulator should behave when a two-steps controller is used. Can be filled with an empty TorqueIntensity message.
 * `grasp_quality`: Float estimating the probability of success of the given grasp. This value highly depends on the task carried out, and to the metric being used. These choices is left to you. Can be `0`.
 
-As you can see, most of the methods generating grasps provide at least some of the information contained in this message. Thats is why with some simple modification we can easily make it compatible with most of the methods.
+As you can see, most of the methods generating grasps provide at least some of the information contained in this message. That is why with some simple modification we can easily make it compatible with most of the methods.
 
 ## GraspCommand
 This message contains all information required to execute a grasp. In addition to the `StandardisedGrasp` message, it contains the grasp state (which phase should be executed next) as well as the maximum torque the manipulator should deploy. Having the grasp state allows to use the same grasp message to execute three different manipulator states by just changing its value.
 
 ## Grasp action
-The provided action server dedicated to grasping relies on this action. The goal definition is the `GraspCommand` message. Its result is a set of three boolean that must be returned stating whether the grasp state defined in the goal has correctly been executed. We defined the feedback as the joint state of the manipulator. Yo ucan find an example of action server [here](???).
+The provided action server dedicated to grasping relies on this action. The goal definition is the `GraspCommand` message. Its result is a set of three boolean that must be returned stating whether the grasp state defined in the goal has correctly been executed. We defined the feedback as the joint state of the manipulator. You can find an example of action server [here](https://github.com/shadow-robot/modular_benchmarking_framework/blob/kinetic-devel/modular_framework_core/nodes/moveit_grasp_action_server.cpp) and [here](https://github.com/bdenoun/EZGripper/blob/master/ezgripper_driver/nodes/ezgripper_controller.py).
 
 ## Utils
 We provide some function **both in python and in C++** in order to help you create some standard and widely used ROS messages and some of the aforementioned messages. <br/>
