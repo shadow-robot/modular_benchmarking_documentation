@@ -1,0 +1,2 @@
+# Contributing
+Since there is always space for improvement, we are happy to receive your feedback. If when you are using the framework you spot some bugs, feel free to raise an issue on the [github repository](https://github.com/shadow-robot/modular_benchmarking_framework). If you do like this framework but feel like something is missing, you are free to fork it or create pull requests. It can be new functionalities, new states or change of the manager, every improvement is welcome.

@@ -4,7 +4,7 @@ It is nevertheless likely that you are working with a different hardware. We are
 
 ## Common steps
 The first step is to create an urdf (or xacro) file in which both the arm(s) and the manipulator(s) are defined such as [here](https://github.com/ARQ-CRISP/ARQ_common_packages/blob/master/arq_robots/urdf/arq_ur5_with_ezgripper.urdf.xacro) or [here](https://github.com/shadow-robot/sr_interface/blob/kinetic-devel/sr_multi_description/urdf/right_srhand_ur10.urdf.xacro). <br/>
-The second step is to create a *moveit_config* package for the robot. You can either use the [Moveit! Setup Assistant](http://docs.ros.org/kinetic/api/moveit_tutorials/html/doc/setup_assistant/setup_assistant_tutorial.html) or follow this step by step [tutorial](./creating_moveit_config).
+The second step is to create a *moveit_config* package for the robot. You can either use the [Moveit! Setup Assistant](http://docs.ros.org/kinetic/api/moveit_tutorials/html/doc/setup_assistant/setup_assistant_tutorial.html) or follow this step by step [tutorial](./3_1_creating_moveit_config).
 
 ## Using your robot in simulation
 Now that you have your moveit config package ready, the only remaining step is to make it compatible with Gazebo.<br/>

@@ -1,8 +1,8 @@
 # Interacting with the simulated environment
-Most of the time, simulation is being used to either experiments some methods without involving the physical robot or to gather data. For both scenarios, you may want to interact with the environment by adding or deleting one or more objects. For this purpose we provide a simple interface to spawn and remove objects in Gazebo that will be automatically update the collision scene.
+Most of the time, simulation is being used to either experiments some methods without involving the physical robot or to gather data. For both scenarios, you may want to interact with the environment by adding or deleting one or more objects. For this purpose we provide a simple interface to spawn and remove objects in Gazebo that will be automatically updated the collision scene.
 
 ## Prerequisite
-The framework can only spawn objects that are described in a [sdf file](http://gazebosim.org/tutorials?tut=build_model). We strongly advise to store all the objects that you are supposed to spawn in the [description package](./description_package.md).
+The framework can only spawn objects that are described in a [sdf file](http://gazebosim.org/tutorials?tut=build_model). We strongly advise to store all the objects that you are supposed to spawn in the [description package](./2_1_description_package.md).
 
 ## Using the api package
 The easiest way to spawn or delete objects is to use the provided [launch file](???) and set the following arguments:
@@ -15,7 +15,7 @@ The easiest way to spawn or delete objects is to use the provided [launch file](
 * `file_path`: Optional string containing the path to a sdf file containing the description of the object to spawn. Default is `""`.
 
 Please note that you **must** provide **either** `file_path` or `object_type` in order to spawn an object. When deleting an object you just need to specify its name (and obviously set `delete_object` to `true`). If you spawned it without naming it, the default name is `object_type` or `file_path`. <br/>
-When adding an object **the Allowed Collision Matrix is automatically updated** and by default, the robot **can't enter in collision with the object**. If you want to allow a collision, please use the different services provided by the [proper manager](./managers.md).
+When adding an object **the Allowed Collision Matrix is automatically updated** and by default, the robot **can't enter in collision with the object**. If you want to allow a collision, please use the different services provided by the [proper manager](./5_1_managers.md).
 
 ## Using the node from the core
 If you prefer using the node that is wrapped in the api package, you can directly call the node `manage_object.py` that can be found in the `modular_framework_core` package. <br/>
@@ -29,4 +29,3 @@ You can specify the different options using the following arguments:
 * `-f` or `--file` followed by the path to the sdf file describing the object to spawn
 
 You can find the source [here](???) for more information about the arguments.
-<!-- Give an example with images ??? -->

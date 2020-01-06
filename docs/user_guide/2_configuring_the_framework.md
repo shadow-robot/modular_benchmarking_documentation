@@ -143,73 +143,22 @@ wrist_mounted_realsense:
 ```
 
 ## Task Constructor
-The different files contained in the folder *task_constructor_script* describe through a simple and intuitive YAML interface the task the robot should perform. Given some *states* representing atomic actions, we believe it possible to create very complex and non-linear behaviours that can be used to solve real world problems. A modular way to connect these states to create use cases, while controlling the behaviour when facing an issue, is using state machines. For this purpose we rely on the [smach](http://wiki.ros.org/smach) library. <br/>
-We created a layer that simplifies the construction of the state machines, so that users without any knowledge regarding state machines, smach or even ROS can program the robot to perform some specified tasks. We provide a set of states allowing to perform most of the generic tasks related to manipulation, but that can be used for other use cases. The user only needs to link the states together through in a YAML file.<br/>
-The YAML file must be structured the following way:
-```yaml
-name: <state_machine_name>
-source: <template_filename>
-node_name: <name_of_node_running_state_machine>
-outcomes: <list_of_state_machine_outcomes>
-states:
-  - <state1>:
-      source: <state_filename>
-      <option_1_state1>: <value_option_1_state1>
-      <option_2_state1>: <value_option_2_state1>
-      ...
-      <option_n_state1>: <value_option_n_state1>
-      transitions: {<state_outcome1>: <state2>, <state_outcome2>: <a_state_or_state_machine_outcome>}
-  - <state2>:
-      source: <state_filename>
-      <option_1_state2>: <value_option_1_state2>
-      <option_2_state2>: <value_option_2_state2>
-      ...
-      <option_n_state2>: <value_option_n_state2>
-      transitions: {<state_outcome3>: <state_machine_1>, <state_outcome4>: <a_state_or_state_machine_outcome>}
-  - <state_machine_1>:
-      source: <template_filename>
-      <option_1_state_machine_1>: <value_option_1_state_machine_1>
-      <option_2_state_machine_1>: <value_option_2_state_machine_1>
-      ...
-      <option_n_state_machine_1>: <value_option_n_state_machine_1>
-      transitions: {<state_outcome3>: <another_state>,  <state_outcome3>: <a_state_or_state_machine_outcome>}
-      states:
-        - <state11>:
-            source: <state_filename>
-            <option_1_state11>: <value_option_1_state11>
-            <option_2_state11>: <value_option_2_state11>
-            ...
-            <option_n_state11>: <value_option_n_state11>
-        ...
-        - <state_n1>:
-            source: <state_filename>
-            <option_1_state_n1>: <value_option_1_state_n1>
-            <option_2_state_n1>: <value_option_2_state_n1>
-            ...
-            <option_n_state_n1>: <value_option_n_state_n1>
-  ...
-  - <staten>:
-      source: <state_filename>
-      <option_1_state1>: <value_option_1_state1>
-      <option_2_state1>: <value_option_2_state1>
-      ...
-      <option_n_state1>: <value_option_n_state1>
-      transitions: {<state_outcome_n>: <a_state_or_state_machine_outcome>, <state_outcome_n+1>: <a_state_or_state_machine_outcome>}
-```
+The different files contained in the folder *task_constructor_script* describe through a simple and intuitive *YAML* interface the task the robot should perform. Given some *states* representing atomic actions, we believe it possible to create very complex and non-linear behaviours that can be used to solve real world problems. A flexible way to connect these states to create use cases, while controlling the behaviour when facing an issue, is using state machines. For this purpose we rely on the [smach](http://wiki.ros.org/smach) library. <br/>
+We created a layer that simplifies the construction of the state machines, so that users without any knowledge regarding state machines, smach or even ROS can program the robot to perform some specified tasks. We provide a set of states allowing to perform most of the generic tasks related to manipulation, but that can be used for other use cases. The user only needs to link the states together in a YAML file.<br/>
 This interface allows to easily create a wide range of use cases and complex closed-loop behaviours just by changing the transitions between the states. You can nest state machines inside others in order to condense more complex behaviours. We provide two task constructor scripts as examples. One is defining a [pick and hold on a physical robot](https://github.com/shadow-robot/modular_benchmarking_framework/modular_framework_api/task_constructor_scripts/pick_and_hold.yaml), the other one can be used in [simulation for picking objects](https://github.com/shadow-robot/modular_benchmarking_framework/modular_framework_api/task_constructor_scripts/simulation_pick.yaml) based on a given Grasp Pose Detection method. <br/>
 **Note that `<state_machine_name>` must match with the corresponding argument in the launch file.** <br/>
-A more in-depth tutorial about the [task constructor](./4_task_constructor.md) and the provided states can be found [here](./provided_states.md).
+A more in-depth tutorial about the [task constructor](./4_task_constructor.md) and the provided states can be found [here](./5_2_states.md).
 
 ## Launch file
 The launch file contains other important information that are required to run the robot. We are going to review all the different arguments that you can set to make the framework fit what you need.
 * ```simulation```: If set to ```false```, automatically launches the framework to communicate with the physical robot. Default is ```true``` (and run Gazebo 9).
-* ```description_package```: Name of the ROS package containing *scenes*, *worlds* and *models* you may want to use to set up your environment. You can find out more about what is a description package [here](./description_package.md).
-* ```robot_package```: Name of the ROS package containing information about the robot such as the *urdf file* and the *controller file*. You can find out more about what is a robot package [here](./robot_package.md).
+* ```description_package```: Name of the ROS package containing *scenes*, *worlds* and *models* you may want to use to set up your environment. You can find out more about what is a description package [here](./2_1_description_package.md).
+* ```robot_package```: Name of the ROS package containing information about the robot such as the *urdf file* and the *controller file*. You can find out more about what is a robot package [here](./2_2_robot_package.md).
 * ```robot_urdf_file```: Name of the urdf file containing the description of the **whole** robot. It must contain both the arm(s) and the manipulator(s). The file should be contained in the ```robot_package```.
-* ```world_file```: Name of the Gazebo **.world** file describing the robot's setup for simulation. An explanation about how to create such files can be found [here](./description_package.md).
-* ```scene_file```: Name of the file containing all the information about the collisions so Moveit can plan according to the different obstacles. An explanation about how to create such files can be found [here](./description_package.md).
+* ```world_file```: Name of the Gazebo **.world** file describing the robot's setup for simulation. An explanation about how to create such files can be found [here](./2_1_description_package.md).
+* ```scene_file```: Name of the file containing all the information about the collisions so Moveit can plan according to the different obstacles. An explanation about how to create such files can be found [here](./2_1_description_package.md).
 * ```urdf_args```: Optional arguments that you may need to pass along with the urdf file (for instance to set the position of the robot). **If not needed, leave empty!**
-* ```moveit_config_package```: Name of the moveit config package required to operate the robot with Moveit. A tutorial about how to create one using the assistant is available [here](http://docs.ros.org/melodic/api/moveit_tutorials/html/doc/setup_assistant/setup_assistant_tutorial.html). If you don't manage to properly create it you can follow this [tutorial](./creating_moveit_config.md).
+* ```moveit_config_package```: Name of the moveit config package required to operate the robot with Moveit. A tutorial about how to create one using the assistant is available [here](http://docs.ros.org/melodic/api/moveit_tutorials/html/doc/setup_assistant/setup_assistant_tutorial.html). If you don't manage to properly create it you can follow this [tutorial](./3_1_creating_moveit_config.md).
 * ```controller_file```: Name of the file containing the different controllers that must be loaded by ROS. The file should be contained in the ```robot_package```.
 * ```simulation_starting_pose```: **Used only in simulation** and defines the values of each joints in Gazebo when starting the robot.
 * ```manipulator_prefix```: String that is contained in all the manipulator's link. For instance, it can be `rh`.
