@@ -246,7 +246,7 @@ import smach
 class StateName(smach.State):
 
     # You can of course add more parameters that you are going to be able to set in the task constructor script. Make sure to make the name in this signature and the one used in the yaml script match.
-    def __init__(self, outcomes=["success", "fail"], input_keys=[], output_keys=[], io_keys=["grasp_client", "max_torque"]):
+    def __init__(self, outcomes=["success", "fail"], input_keys=[], output_keys=[], io_keys=["<optional_userdata_field>", "<optional_userdata_field>"]):
         # This line must be here since it makes the class a state that can be used by smach
         smach.State.__init__(self, outcomes=outcomes, io_keys=io_keys, input_keys=input_keys, output_keys=output_keys)
         # You can initialize whatever you need

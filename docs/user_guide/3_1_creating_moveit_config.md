@@ -21,7 +21,8 @@ Now, you can search all the occurrences of `template_moveit_config` and replace 
 
 ## Changing the urdf and sdf file
 The first thing to do is to include the proper urdf (or xacro) files of both the arm and the manipulator. If required you can also create arguments to make this urdf file a bit more generic. Change `<base_link_of_the_robot>` with the name of the base link of the robot arm. Define the two robot parts in the urdf file and you are done with it. <br/>
-For the srdf file, change the description of each link between `<>` with their real names. For instance of ur arms, `<ee_link_of_robot_arm>` becomes `ee_link`. Make sure to do it everywhere in the file and to add the proper disabled collisions. For this part, we strongly advise to use the moveit setup assistant (and then copy-paste the result).
+For the srdf file, change the description of each link between `<>` with their real names. For instance of ur arms, `<ee_link_of_robot_arm>` becomes `ee_link`. Make sure to do it everywhere in the file and to add the proper disabled collisions. For this part, we strongly advise to use the moveit setup assistant (and then copy-paste the result). <br/>
+**TIP:** For each element surrounded by `<>`, it is easier to search for it in the whole folder so you avoid any incompatibility.
 
 ## Specifying the name of the joints of the robot
 The last step consists in specifying the name of the joints for each group we want Moveit to be able to control. Replace the proper values in `controllers.yaml`, `fake_controllers.yaml` and `joint_limits.yaml`.
