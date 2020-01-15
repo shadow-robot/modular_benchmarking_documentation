@@ -1,5 +1,5 @@
 # The Modular Benchmarking Framework Documentation
-This is the starting point for the Modular Benchmarking Framework Documentation.
+This is the starting point for the Modular Benchmarking Framework Documentation. **The documentation is still in progress!**
 
 ## Motivation
 Robotic manipulation is a high level and complex task which combines a range of different components. Although one might want to compare the overall system, it becomes hard to dissociate and evaluate each component of a manipulation pipeline, and therefore to obtain a fair comparison between different specific solutions. Hence, we propose the Modular Benchmarking Framework, a ROS-based framework that enables to: 1) easily benchmark different solutions with minimal coding and integration effort and 2) separately compare each component of a pipeline, which is essential to drive progress in this area. <br/>
