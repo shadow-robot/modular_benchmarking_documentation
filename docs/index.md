@@ -10,8 +10,3 @@ GRIP contains a GUI that we developped in order to guide users through all the s
 
 ## Tasks
 * [Task 1: Making a robot arm move](user_study/1_first_task.md)
-* [Configuring the framework](user_guide/2_configuring_the_framework.md)
-* [Integrating hardware to the framework](user_guide/3_integrating_robot.md)
-* [Using the task constructor](user_guide/4_task_constructor.md)
-* [Framework's core](user_guide/5_framework_core.md)
-* [Contributing](user_guide/6_contributing.md)
