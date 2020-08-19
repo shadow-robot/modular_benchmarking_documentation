@@ -10,3 +10,5 @@ GRIP contains a GUI that we developped in order to guide users through all the s
 
 ## Tasks
 * [Task 1: Making a robot arm move](user_study/1_first_task.md)
+* [Task 2: Change kinematics and planner](user_study/2_second_task.md)
+* [Task 3: Simplified pick and place](user_study/3_third_task.md)
