@@ -7,8 +7,10 @@ GRIP contains a GUI that we developped in order to guide users through all the s
 
 ## Tutorials
 * [Grasping and Manipulation](user_study/0_main_principles.md)
+* [State machines](user_study/05_state_machines.md)
 
 ## Tasks
 * [Task 1: Making a robot arm move](user_study/1_first_task.md)
 * [Task 2: Change kinematics and planner](user_study/2_second_task.md)
 * [Task 3: Simplified pick and place](user_study/3_third_task.md)
+* [Task 4: Real pick and place](user_study/4_last_task.md)
